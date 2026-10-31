@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>amora · dating reimagined</title>
+  <!-- Google Fonts for elegant typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #fbf7f5;
+      background-image: radial-gradient(circle at 10% 20%, rgba(255, 220, 210, 0.4) 0%, transparent 40%),
+                        radial-gradient(circle at 90% 80%, rgba(230, 210, 255, 0.3) 0%, transparent 45%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      padding: 1.5rem;
+      color: #2e2420;
+    }
+
+    /* Main card – glass morphism with soft edges */
+    .app-container {
+      max-width: 440px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-radius: 44px;
+      box-shadow: 0 30px 60px -20px rgba(180, 130, 120, 0.3),
+                  0 10px 30px -10px rgba(150, 100, 90, 0.1),
+                  inset 0 1px 1px rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+
+    .app-container:hover {
+      transform: translateY(-4px);
+    }
+
+    /* header – refined */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.6rem 1.8rem 0.8rem 1.8rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.2rem;
+      font-family: 'Playfair Display', serif;
+      font-weight: 600;
+      font-size: 1.9rem;
+      letter-spacing: -0.5px;
+      color: #3d2c26;
+      line-height: 1;
+    }
+
+    .logo i {
+      font-size: 1.8rem;
+      background: linear-gradient(145deg, #e26d5c, #c94b38);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-right: 2px;
+    }
+
+    .logo span {
+      font-weight: 300;
+      font-style: italic;
+      color: #c26b5a;
+      font-size: 1.5rem;
+      margin-left: 2px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 1.4rem;
+      color: #8f7a72;
+      font-size: 1.25rem;
+    }
+
+    .header-actions i {
+      cursor: pointer;
+      transition: color 0.2s, transform 0.2s;
+    }
+
+    .header-actions i:hover {
+      color: #c94b38;
+      transform: translateY(-2px);
+    }
+
+    /* refined chips */
+    .filter-row {
+      display: flex;
+      gap: 0.7rem;
+      padding: 0.6rem 1.8rem 0.6rem 1.8rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .filter-row::-webkit-scrollbar {
+      display: none;
+    }
+
+    .chip {
+      background: rgba(250, 240, 235, 0.8);
+      border: 1px solid rgba(220, 200, 190, 0.4);
+      color: #5a4840;
+      padding: 0.5rem 1.1rem;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      backdrop-filter: blur(4px);
+    }
+
+    .chip i {
+      font-size: 0.7rem;
+      color: #b87b6b;
+      transition: color 0.2s;
+    }
+
+    .chip.active {
+      background: #3d2c26;
+      border-color: #3d2c26;
+      color: #fff5f0;
+      box-shadow: 0 6px 14px -6px rgba(61, 44, 38, 0.3);
+    }
+
+    .chip.active i {
+      color: #ffbcae;
+    }
+
+    .chip:hover {
+      background: #f5e3dd;
+      border-color: #dbbcae;
+    }
+
+    /* Profile section — elevated card with subtle gradient overlay */
+    .profile-section {
+      padding: 0.8rem 1.8rem 0 1.8rem;
+    }
+
+    .photo-wrapper {
+      position: relative;
+      border-radius: 32px;
+      overflow: hidden;
+      box-shadow: 0 18px 30px -12px rgba(120, 80, 70, 0.25);
+      aspect-ratio: 1 / 1.08;
+      background: #e6d6cf;
+      transition: box-shadow 0.3s;
+    }
+
+    .photo-wrapper:hover {
+      box-shadow: 0 22px 40px -12px rgba(180, 110, 95, 0.35);
+    }
+
+    .photo-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .photo-wrapper:hover img {
+      transform: scale(1.03);
+    }
+
+    /* online status – refined */
+    .status {
+      position: absolute;
+      bottom: 16px;
+      left: 18px;
+      background: rgba(20, 15, 12, 0.65);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 0.45rem 1.1rem 0.45rem 0.9rem;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      letter-spacing: 0.2px;
+    }
+
+    .online-dot {
+      width: 9px;
+      height: 9px;
+      background: #5ed88f;
+      border-radius: 50%;
+      box-shadow: 0 0 0 2px rgba(94, 216, 143, 0.35);
+      display: inline-block;
+    }
+
+    /* name & age row */
+    .profile-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+    }
+
+    .name-block {
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .name-block h2 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 600;
+      font-size: 2rem;
+      letter-spacing: -0.5px;
+      color: #241b17;
+      line-height: 1.1;
+    }
+
+    .age {
+      font-size: 1.45rem;
+      font-weight: 300;
+      color: #7f6a61;
+      letter-spacing: -0.3px;
+    }
+
+    .verified-badge {
+      color: #4a90e2;
+      font-size: 1.1rem;
+      margin-left: 0.1rem;
+    }
+
+    .distance-tag {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: #f3e8e4;
+      padding: 0.35rem 0.9rem;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #68564f;
+      white-space: nowrap;
+      border: 1px solid #e8d7d0;
+    }
+
+    .distance-tag i {
+      font-size: 0.65rem;
+      color: #c27a6a;
+    }
+
+    /* bio */
+    .bio {
+      margin-top: 0.85rem;
+      font-size: 0.95rem;
+      line-height: 1.55;
+      color: #4f3e37;
+      font-weight: 400;
+      display: flex;
+      gap: 0.5rem;
+      align-items: flex-start;
+    }
+
+    .bio i {
+      color: #d68b7a;
+      font-size: 0.9rem;
+      margin-top: 0.2rem;
+      opacity: 0.8;
+    }
+
+    /* interests – minimalist tags */
+    .interests {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 1.2rem;
+    }
+
+    .interest {
+      background: transparent;
+      border: 1px solid #e3d2ca;
+      padding: 0.35rem 0.9rem;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #5a4840;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+      cursor: default;
+      backdrop-filter: blur(4px);
+    }
+
+    .interest i {
+      font-size: 0.65rem;
+      color: #c47a68;
+      opacity: 0.8;
+    }
+
+    .interest:hover {
+      background: #f5e7e1;
+      border-color: #dbb6a8;
+    }
+
+    /* match hint */
+    .match-hint {
+      margin-top: 0.9rem;
+      background: linear-gradient(100deg, #fef3ef, #fce9e3);
+      border-radius: 50px;
+      padding: 0.55rem 1.1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: #b3523e;
+      border: 1px solid #ffe1d6;
+      letter-spacing: 0.2px;
+    }
+
+    .match-hint i {
+      font-size: 0.85rem;
+      color: #e07a64;
+    }
+
+    /* action buttons – large, elegant, soft shadows */
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 1.2rem;
+      padding: 1.6rem 1.8rem 1.2rem 1.8rem;
+    }
+
+    .action-btn {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      border: none;
+      background: white;
+      box-shadow: 0 12px 22px -8px rgba(140, 100, 90, 0.18),
+                  0 4px 10px -2px rgba(0, 0, 0, 0.02),
+                  inset 0 1px 2px rgba(255, 255, 255, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+    }
+
+    .action-btn:hover {
+      transform: scale(1.07) translateY(-3px);
+      box-shadow: 0 18px 28px -10px rgba(180, 110, 95, 0.3);
+    }
+
+    .action-btn:active {
+      transform: scale(0.94);
+      box-shadow: 0 6px 12px -4px rgba(120, 80, 70, 0.2);
+    }
+
+    .btn-pass {
+      color: #a08e87;
+    }
+
+    .btn-pass:hover {
+      color: #c94b38;
+      background: #fff6f3;
+    }
+
+    .btn-like {
+      color: #e25d4b;
+      background: #fff3f0;
+      border-color: #ffe2db;
+      box-shadow: 0 12px 22px -8px rgba(226, 93, 75, 0.3);
+    }
+
+    .btn-like:hover {
+      background: #ffe8e2;
+      color: #b33e2c;
+    }
+
+    .btn-super {
+      color: #e8a34b;
+      background: #fff7ec;
+      border-color: #ffebd2;
+    }
+
+    .btn-super:hover {
+      background: #ffefd8;
+      color: #c77d2a;
+    }
+
+    .btn-boost {
+      color: #9b7be0;
+      background: #f5f1ff;
+      border-color: #e6daff;
+    }
+
+    .btn-boost:hover {
+      background: #ece2ff;
+    }
+
+    /* bottom navigation – minimal */
+    .bottom-nav {
+      display: flex;
+      justify-content: space-around;
+      padding: 1rem 1.2rem 1.4rem 1.2rem;
+      border-top: 1px solid rgba(220, 200, 190, 0.35);
+      background: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(8px);
+    }
+
+    .nav-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.3rem;
+      background: transparent;
+      border: none;
+      color: #a49087;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      transition: color 0.2s, transform 0.2s;
+      font-family: 'Inter', sans-serif;
+      padding: 0.25rem 0.6rem;
+      border-radius: 50px;
+    }
+
+    .nav-btn i {
+      font-size: 1.35rem;
+      transition: transform 0.2s;
+    }
+
+    .nav-btn:hover {
+      color: #c26b5a;
+    }
+
+    .nav-btn.active {
+      color: #b34a38;
+    }
+
+    .nav-btn.active i {
+      color: #b34a38;
+      transform: translateY(-2px);
+      text-shadow: 0 2px 8px rgba(200, 100, 80, 0.3);
+    }
+
+    .nav-btn:hover i {
+      transform: translateY(-2px);
+    }
+
+    /* micro animations */
+    .pop {
+      animation: pop 0.32s ease;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.28); }
+      100% { transform: scale(1); }
+    }
+
+    .pulse-ring {
+      animation: pulse 0.4s ease;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(200, 100, 80, 0.3); }
+      100% { box-shadow: 0 0 0 14px rgba(200, 100, 80, 0); }
+    }
+
+    /* avatar fallback – warm gradient */
+    .photo-wrapper img {
+      background: linear-gradient(145deg, #f0dfd7, #e8cfc5);
+      content: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 240" width="220" height="240"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:%23f7e6df"/><stop offset="100%" style="stop-color:%23e3cdc2"/></linearGradient></defs><rect width="220" height="240" fill="url(%23g)"/><circle cx="110" cy="90" r="48" fill="%23dcbbae"/><circle cx="92" cy="78" r="6" fill="%233d2c26"/><circle cx="128" cy="78" r="6" fill="%233d2c26"/><path d="M92 108 Q110 128 128 108" stroke="%233d2c26" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="160" cy="175" r="16" fill="%23f0c3b3"/><circle cx="60" cy="175" r="16" fill="%23f0c3b3"/><rect x="70" y="150" width="80" height="80" rx="24" fill="%23c9a393"/><path d="M78 182 Q110 200 142 182" stroke="%23fef0ea" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.5"/></svg>');
+    }
+
+    /* make everything buttery */
+    button, .chip, .interest, .nav-btn {
+      -webkit-tap-highlight-color: transparent;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  <!-- header -->
+  <div class="header">
+    <div class="logo">
+      <i class="fas fa-infinity"></i> amora <span>·</span>
+    </div>
+    <div class="header-actions">
+      <i class="fas fa-sliders-h" title="Preferences"></i>
+      <i class="fas fa-comment-dots" title="Messages"></i>
+    </div>
+  </div>
+
+  <!-- refined filter chips -->
+  <div class="filter-row">
+    <div class="chip active"><i class="fas fa-heart"></i> For you</div>
+    <div class="chip"><i class="fas fa-fire"></i> Trending</div>
+    <div class="chip"><i class="fas fa-compass"></i> Nearby</div>
+    <div class="chip"><i class="fas fa-star"></i> New</div>
+  </div>
+
+  <!-- profile card – elevated aesthetic -->
+  <div class="profile-section">
+    <div class="photo-wrapper">
+      <img alt="Portrait of Sofia" />
+      <div class="status">
+        <span class="online-dot"></span> Active now
+      </div>
+    </div>
+
+    <div class="profile-meta">
+      <div class="name-block">
+        <h2>Sofia</h2>
+        <span class="age">27</span>
+        <i class="fas fa-check-circle verified-badge"></i>
+      </div>
+      <div class="distance-tag">
+        <i class="fas fa-location-dot"></i> 1.8 km
+      </div>
+    </div>
+
+    <div class="bio">
+      <i class="fas fa-quote-left"></i>
+      <span>Designer by day, stargazer by night. Looking for someone to share slow mornings and city lights.</span>
+    </div>
+
+    <div class="interests">
+      <span class="interest"><i class="fas fa-camera"></i> Film photography</span>
+      <span class="interest"><i class="fas fa-mug-hot"></i> Matcha</span>
+      <span class="interest"><i class="fas fa-hiking"></i> Hiking</span>
+      <span class="interest"><i class="fas fa-music"></i> Indie</span>
+    </div>
+
+    <div class="match-hint">
+      <i class="fas fa-sparkles"></i> 15 shared interests
+    </div>
+  </div>
+
+  <!-- action buttons – refined -->
+  <div class="actions">
+    <button class="action-btn btn-pass" id="passBtn" aria-label="Pass">
+      <i class="fas fa-times"></i>
+    </button>
+    <button class="action-btn btn-like" id="likeBtn" aria-label="Like">
+      <i class="fas fa-heart"></i>
+    </button>
+    <button class="action-btn btn-super" id="superBtn" aria-label="Super like">
+      <i class="fas fa-star"></i>
+    </button>
+    <button class="action-btn btn-boost" id="boostBtn" aria-label="Boost">
+      <i class="fas fa-bolt"></i>
+    </button>
+  </div>
+
+  <!-- bottom navigation – minimal & airy -->
+  <div class="bottom-nav">
+    <button class="nav-btn active">
+      <i class="fas fa-home"></i>
+      <span>Home</span>
+    </button>
+    <button class="nav-btn">
+      <i class="fas fa-heart"></i>
+      <span>Likes</span>
+    </button>
+    <button class="nav-btn">
+      <i class="fas fa-comment"></i>
+      <span>Chats</span>
+    </button>
+    <button class="nav-btn">
+      <i class="fas fa-user"></i>
+      <span>Profile</span>
+    </button>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // Like button – with pop & pulse effect
+    const likeBtn = document.getElementById('likeBtn');
+    likeBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      this.classList.add('pop');
+      setTimeout(() => this.classList.remove('pop'), 350);
+
+      // subtle color flash
+      const originalColor = this.style.color;
+      this.style.color = '#b33e2c';
+      this.style.background = '#ffe0d8';
+      setTimeout(() => {
+        this.style.color = originalColor;
+        this.style.background = '#fff3f0';
+      }, 200);
+    });
+
+    // Pass – gentle press effect
+    const passBtn = document.getElementById('passBtn');
+    passBtn.addEventListener('click', function() {
+      this.style.transform = 'scale(0.88) rotate(-4deg)';
+      setTimeout(() => { this.style.transform = ''; }, 180);
+    });
+
+    // Super like – rotate + glow
+    const superBtn = document.getElementById('superBtn');
+    superBtn.addEventListener('click', function() {
+      this.style.transform = 'rotate(6deg) scale(1.08)';
+      this.classList.add('pulse-ring');
+      setTimeout(() => {
+        this.style.transform = '';
+        this.classList.remove('pulse-ring');
+      }, 350);
+    });
+
+    // Boost – pulse ring animation
+    const boostBtn = document.getElementById('boostBtn');
+    boostBtn.addEventListener('click', function() {
+      this.classList.add('pulse-ring');
+      setTimeout(() => this.classList.remove('pulse-ring'), 400);
+    });
+
+    // Filter chips – active state toggle
+    const chips = document.querySelectorAll('.chip');
+    chips.forEach(chip => {
+      chip.addEventListener('click', function() {
+        chips.forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    // Bottom nav – active state
+    const navBtns = document.querySelectorAll('.nav-btn');
+    navBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        navBtns.forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    // Message icon micro-interaction
+    const messageIcon = document.querySelector('.fa-comment-dots');
+    if (messageIcon) {
+      messageIcon.addEventListener('click', function() {
+        this.style.color = '#c94b38';
+        setTimeout(() => { this.style.color = ''; }, 300);
+      });
+    }
+
+    // Slider icon rotate on click
+    const sliderIcon = document.querySelector('.fa-sliders-h');
+    if (sliderIcon) {
+      sliderIcon.addEventListener('click', function() {
+        this.style.transform = 'rotate(180deg)';
+        setTimeout(() => { this.style.transform = ''; }, 350);
+      });
+    }
+
+    // Add a soft pulse to the online dot (ambient)
+    const onlineDot = document.querySelector('.online-dot');
+    if (onlineDot) {
+      setInterval(() => {
+        onlineDot.style.boxShadow = '0 0 0 4px rgba(94, 216, 143, 0.2)';
+        setTimeout(() => {
+          onlineDot.style.boxShadow = '0 0 0 2px rgba(94, 216, 143, 0.35)';
+        }, 500);
+      }, 3000);
+    }
+  })();
+</script>
+</body>
+</html>
